@@ -162,3 +162,27 @@ stage('package') {
         } 
     } 
 } 
+
+
+
+
+
+
+webhook:
+ngrok http 8080
+copy .dev link
+Go to your GitHub repository. 
+2. Navigate to Settings → Webhooks. 
+3. Click “Add webhook”. 
+4. In the Payload URL field: 
+o Enter the Jenkins 
+webhook 
+Add url https://unhired-stormily-alaine.ngrok-free.dev/github-webhook/
+Open Jenkins Dashboard. 
+2. Select the job (freestyle or pipeline) you’ve already created.
+3. Click Configure. 
+4. Scroll down to the Build Triggers section. 
+5. Check the box: ✅GitHub hook trigger for GITScm polling
+1. Make any code update in your local repo and push it to GitHub. 
+2. Once pushed, GitHub will trigger the webhook. 
+3. Jenkins will automatically detect the change and start the build pipeline.

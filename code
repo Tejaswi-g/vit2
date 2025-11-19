@@ -21,6 +21,7 @@ in that page there will be ngrok config copy that and paste in cmd
 ngrok .exe http 8080
 
 6)Kubernetes---minikube
+--------------------------------------------------------------------------
 pre-requisites
 docker- desktop should be running
 u should have docker image
@@ -51,6 +52,7 @@ cmds
 
 
 7)nagios
+-------------------------------------------------------------------
 docker pull jasonrivers/nagios:latest 
 docker run --name nagios4 -p 8090:80 -d jasonrivers/nagios:latest
 docker ps
@@ -58,6 +60,7 @@ http://localhost:8090/nagios
 
 
 8)aws
+-----------------------------------------------------------------------
  create ec2 instance
  connect it
  cmds:
@@ -88,29 +91,12 @@ each set will be having one diagram
 
 
 
-
-
-
-
-
-
-Jenkins webhook trigger
-
-create new freestyle
-git - place url
-	main branch
-	triggers- polling option
-	environment- delete workspace
-build step- clean install
-
-
-
-
-
 email
+-------------------------------------------------------------------
 install email extension in plugins
 manage account security 2 step verification
 app pass-Jenkins generate
+in jenkins- in tools:
 configure system
 last email- smtp.gmail.com
 advanced- username- gmail
@@ -128,6 +114,7 @@ click test configuration
 
 
 script:
+----------------------------------------------------------------
 pipeline { 
 agent any 
 tools{ 
@@ -164,11 +151,65 @@ stage('package') {
 } 
 
 
+Script harshith:
+---------------------------------------------------------
+pipeline{
+  agent any
+  tools{
+    jdk 'JAVA_HOME'
+    maven 'MAVEN_HOME'
+  }
+  stages{
+    stage('git repo and clean'){
+      steps{
+        sh 'rm -rf java_se_lab || true'
+        sh 'git clone https://github.com/harshith-kulkarni/java_se_lab'
+        echo 'cloned repo'
+      }
+    }
+    stage('clean'){
+      steps{
+        dir('java_se_lab'){
+          sh 'mvn clean compile'
+        }
+        echo 'compiled'
+      }
+    }
+    stage('test'){
+      steps{
+        dir('java_se_lab'){
+          sh 'mvn test'
+        }
+        echo 'tested'
+      }
+    }
+    stage('package'){
+      steps{
+        dir('java_se_lab'){
+          sh 'mvn package'
+          archiveArtifacts 'target/*.jar'  idid kuda push chey ra anduloed'
+      }
+    }
+  chey ra anduloalways{ cleanWs() }
+    success{ echo 'build done' }
+    failure{ echo 'build failed' }
+  }
+}
 
 
 
 
-webhook:
+https://github.com/savram674/MavenJavaDemo.git
+
+
+https://github.com/archanareddyse/mavenweb.git
+
+
+
+
+
+webhook build triggers:
+-------------------------------------------
 ngrok http 8080
 copy .dev link
 Go to your GitHub repository. 
@@ -177,12 +218,103 @@ Go to your GitHub repository.
 4. In the Payload URL field: 
 o Enter the Jenkins 
 webhook 
-Add url https://unhired-stormily-alaine.ngrok-free.dev/github-webhook/
+Add url example-------<https://unhired-stormily-alaine.ngrok-free.dev/github-webhook/>
 Open Jenkins Dashboard. 
 2. Select the job (freestyle or pipeline) you’ve already created.
 3. Click Configure. 
 4. Scroll down to the Build Triggers section. 
 5. Check the box: ✅GitHub hook trigger for GITScm polling
 1. Make any code update in your local repo and push it to GitHub. 
+
+git add .
+git commit -m "testing github webhook"
+git push origin main
+
 2. Once pushed, GitHub will trigger the webhook. 
 3. Jenkins will automatically detect the change and start the build pipeline.
+
+
+
+
+
+
+
+
+
+jenkins deployment using tomcat:
+----------------------------------------------------------------
+└── Step 1: Open Jenkins (localhost:8080) 
+├── Click on "New Item" (left side menu) 
+└── Step 2: Create Freestyle Project (e.g., MavenWeb_Build) 
+├── Enter project name (e.g., MavenWeb_Build) 
+├── Click "OK"
+└── Configure the project: 
+├── Description: "Web Build demo" 
+├── Source Code Management: 
+└── Git repository URL: [GitMavenWeb repo URL] 
+├── Branches to build: */Main or master
+└── Build Steps: 
+├── Add Build Step -> "Invoke top-level Maven targets" 
+└── Maven version: MAVEN_HOME 
+└── Goals: clean 
+├── Add Build Step -> "Invoke top-level Maven targets" 
+└── Maven version: MAVEN_HOME 
+└── Goals: install
+└── Post-build Actions: 
+├── Add Post Build Action -> "Archive the artifacts" 
+└── Files to archive: **/* 
+├── Add Post Build Action -> "Build other projects" 
+└── Projects to build: MavenWeb_Test 
+└── Trigger: Only if build is stable 
+└── Apply and Save
+└── Step 3: Create Freestyle Project (e.g., MavenWeb_Test) 
+├── Enter project name (e.g., MavenWeb_Test) 
+├── Click "OK"
+└── Configure the project: 
+├── Description: "Test demo" 
+├── Build Environment: 
+└── Check: "Delete the workspace before build starts" 
+├── Add Build Step -> "Copy artifacts from another project" 
+└── Project name: MavenWeb_Build 
+└── Build: Stable build only 
+└── Artifacts to copy: **/*
+├── Add Build Step -> "Invoke top-level Maven targets" 
+└── Maven version: MAVEN_HOME 
+└── Goals: test 
+└── Post-build Actions: 
+├── Add Post Build Action -> "Archive the artifacts" 
+└── Files to archive: **/*
+├── Add Post Build Action -> "Build other projects" 
+└── Projects to build: MavenWeb_Deploy 
+└── Apply and Save 
+└── Step 4: Create Freestyle Project (e.g., MavenWeb_Deploy) 
+├── Enter project name (e.g., MavenWeb_Deploy) 
+├── Click "OK"
+└── Configure the project: 
+├── Description: "Web Code Deployment" 
+├── Build Environment: 
+└── Check: "Delete the workspace before build starts" 
+├── Add Build Step -> "Copy artifacts from another project" 
+└── Project name: MavenWeb_Test 
+└── Build: Stable build only 
+└── Artifacts to copy: **/*
+└── Post-build Actions: 
+├── Add Post Build Action -> "Deploy WAR/EAR to a container" 
+└── WAR/EAR File: **/*.war 
+└── Context path: Webpath 
+└── Add container -> Tomcat 9.x remote 
+└── Credentials: Username: admin, Password: 1234 
+── Tomcat URL: https://localhost:8085/
+└── Apply and Save└── Step 5: Create Pipeline View for MavenWeb 
+├── Click "+" beside "All" on the dashboard 
+├── Enter name: MavenWeb_Pipeline 
+├── Select "Build pipeline view"
+└── Pipeline Flow: 
+├── Layout: Based on upstream/downstream relationship 
+├── Initial job: MavenWeb_Build 
+└── Apply and Save└── Step 6: Run the Pipeline and Check Output 
+├── Click on the trigger “RUN” to run the pipeline 
+Note:  
+1. After Click on Run -> click on the small black box to open the console to check if the 
+build is success 
+2. Now we see all the build has  success if it appears in green color

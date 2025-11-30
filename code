@@ -151,6 +151,41 @@ stage('package') {
 } 
 
 
+
+ORRRRRRRR
+
+pipeline {
+    agent any
+    tools{
+        maven 'MAVEN-HOME'
+    }
+    stages {
+        stage('git repo & clean') {
+            steps {
+                //bat "rmdir  /s /q mavenjava"
+                bat "git clone https://github.com/savram674/MavenJavaDemo.git"
+                bat "mvn clean -f MavenJavaDemo"
+            }
+        }
+        stage('install') {
+            steps {
+                bat "mvn install -f MavenJavaDemo"
+            }
+        }
+        stage('test') {
+            steps {
+                bat "mvn test -f MavenJavaDemo"
+            }
+        }
+        stage('package') {
+            steps {
+                bat "mvn package -f MavenJavaDemo"
+            }
+        }
+    }
+}
+
+
 Script harshith:
 ---------------------------------------------------------
 pipeline{

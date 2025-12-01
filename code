@@ -1,929 +1,784 @@
-4 questions 25 each
-Jenkins
-pre-requisites
-1)local host 8080--tomcat //when u go in this u should know userid and pass
-2)plugins section 
-	email-extension
-3)tools and configuration
-	maven, git, jdk
-Questions:
-1) two pipeline
-2) 3 pipeline
-3) build triggers -- webhooks
-4) email-notification
-5) scripted pipeline
-
-what to do:
-install ngrok
-sign up
-open cmd of ngrok
-in that page there will be ngrok config copy that and paste in cmd
-ngrok .exe http 8080
-
-6)Kubernetes---minikube
---------------------------------------------------------------------------
-pre-requisites
-docker- desktop should be running
-u should have docker image
-
-cmds
-	minikube version
-	minikube status
-	kubectl create deployment mynginx --image=nginx
-	minikube status
-	kubectl get deployment
-	kubectl get pods
-	kubectl describe pods
-	kubectl scale deployment mynginx --replicas=4
-	kubectl get deployment
-	kubectl get pods
-	kubectl describe pod <pod-name>   # copy–paste a pod name
-	kubectl expose deployment mynginx --type=NodePort --port=80 --target-port=80 --name=mynginx
-	kubectl get service mynginx
-	kubectl port-forward service/mynginx 30088:80
-	http://localhost:30088
-	minikube service mynginx --url
-	minikube dashboard
-	kubectl delete deployment mynginx
-	kubectl delete service mynginx
-	minikube stop
-
-
-
-
-7)nagios
--------------------------------------------------------------------
-docker pull jasonrivers/nagios:latest 
-docker run --name nagios4 -p 8090:80 -d jasonrivers/nagios:latest
-docker ps
-http://localhost:8090/nagios
-
-
-8)aws
------------------------------------------------------------------------
- create ec2 instance
- connect it
- cmds:
-	docker --version	
-	sudo su //it moves to admin
-	sudo apt-get update
-	sudo apt-get install docker.io
-	sudo docker images
-	sudo docker ps
-	git clone url.git
-	ls
-	cd that folder
-	sudo docker build -t img1 . 
-	sudo docker images
-	sudo docker run -d -p 80:8080 img1
-
-9)UML-- use case diagram
-	class
-	sequence
-	component
-case study-- 	online reservation 
-		hospital management
-		book banking systems	
-each set will be having one diagram 
-
-
-
-
-
-
-email
--------------------------------------------------------------------
-install email extension in plugins
-manage account security 2 step verification
-app pass-Jenkins generate
-in jenkins- in tools:
-configure system
-last email- smtp.gmail.com
-advanced- username- gmail
-	  pass- generated one
-use ssl
-port 465
-click on test
-past gmail username 
-click test configuration
-
-
-
-
-
-
-
-script:
-----------------------------------------------------------------
-pipeline { 
-agent any 
-tools{ 
-maven 'MAVEN-HOME' 
+EXPERIMENT-1 
+Implement the data link layer framing methods such as character-stuffing and bit 
+stuffing. 
+#include <stdio.h> 
+#include <string.h> 
+#define FLAG '$'    // Frame delimiter for Character Stuffing 
+#define ESC '\\'   // Escape character for Character Stuffing 
+// Function for Character Stuffing 
+void characterStuffing(char *input) { 
+printf("Character Stuffed Output: %c", FLAG); 
+for (int i = 0; i < strlen(input); i++) { 
+if (input[i] == FLAG || input[i] == ESC) { 
+printf("%c", ESC); 
 } 
-stages { 
-stage('git repo & clean') { 
-steps { 
-//bat "rmdir  /s /q mavenjava" 
-bat "git clone provide your github link" 
-bat "mvn clean -f mavenjava" 
+printf("%c", input[i]); 
+} 
+printf("%c\n", FLAG); 
+} 
+// Function for Bit Stuffing 
+void bitStuffing(char *input) { 
+printf("Bit Stuffed Output: 01111110 "); // Flag sequence for bit stuffing 
+int count = 0; 
+for (int i = 0; i < strlen(input); i++) { 
+if (input[i] == '1') { 
+count++; 
+printf("1"); 
+if (count == 5) { // After five consecutive 1s, insert a 0 
+printf("0"); 
+count = 0; 
+} 
+} else { 
+printf("0"); 
+count = 0; 
 } 
 } 
-stage('install') { 
-steps { 
-bat "mvn install -f mavenjava" #project name# 
+printf(" 01111110\n"); // Ending flag sequence 
 } 
+int main() { 
+int choice; 
+char input[100]; 
+printf("Choose Framing Method:\n1. Character Stuffing\n2. Bit Stuffing\nEnter your 
+choice: "); 
+scanf("%d", &choice); 
+getchar();  // Consume newline character 
+printf("Enter the data string: "); 
+fgets(input, sizeof(input), stdin); 
+input[strcspn(input, "\n")] = 0; // Remove newline character 
+if (choice == 1) { 
+characterStuffing(input); 
+} else if (choice == 2) { 
+bitStuffing(input); 
+} else { 
+printf("Invalid choice!\n"); 
 } 
-stage('test') { 
-steps { 
-bat "mvn test -f mavenjava" 
+return 0; 
 } 
+
+
+
+EXPERIMENT-2 
+Write a program to compute CRC code for the polynomials 
+
+// Include headers   
+#include<stdio.h>   
+#include<string.h>   
+// length of the generator polynomial   
+#define N strlen(gen_poly)   
+// data to be transmitted and received   
+char data[28];   
+// CRC value   
+char check_value[28];   
+// generator polynomial   
+char gen_poly[10];   
+// variables    
+int data_length,i,j;   
+// function that performs XOR operation   
+void XOR(){   
+// if both bits are the same, the output is 0   
+// if the bits are different the output is 1   
+for(j = 1;j < N; j++)   
+check_value[j] = (( check_value[j] == gen_poly[j])?'0':'1');      
+}   
+void crc(){   
+// initializing check_value   
+for(i=0;i<N;i++)   
+check_value[i]=data[i];   
+do{   
+// check if the first bit is 1 and calls XOR function   
+if(check_value[0]=='1')   
+XOR();   
+// Move the bits by 1 position for the next computation   
+for(j=0;j<N-1;j++)   
+check_value[j]=check_value[j+1];   
+// appending a bit from data   
+check_value[j]=data[i++];   
+}while(i<=data_length+N-1);   
+// loop until the data ends   
+}   
+// Function to check for errors on the receiver side   
+void receiver(){   
+// get the received data   
+printf("Enter the received data: ");   
+scanf("%s", data);   
+printf("\n-----------------------------\n");   
+printf("Data received: %s", data);   
+// Cyclic Redundancy Check   
+crc();   
+// Check if the remainder is zero to find the error   
+for(i=0;(i<N-1) && (check_value[i]!='1');i++);        
+if(i<N-1)   
+printf("\nError detected\n\n");   
+else   
+printf("\nNo error detected\n\n");   
+}  
+int main()   
+{   
+// get the data to be transmitted   
+printf("\nEnter data to be transmitted: ");   
+scanf("%s",data);   
+printf("\n Enter the Generating polynomial: ");   
+// get the generator polynomial   
+scanf("%s",gen_poly);   
+// find the length of data   
+data_length=strlen(data);   
+// appending n-1 zeros to the data   
+for(i=data_length;i<data_length+N-1;i++)   
+data[i]='0';   
+printf("\n----------------------------------------");   
+// print the data with padded zeros   
+printf("\n Data padded with n-1 zeros : %s",data);   
+printf("\n----------------------------------------");   
+// Cyclic Redundancy Check   
+crc();   
+// print the computed check value   
+printf("\nCRC or Check value is : %s",check_value);   
+// Append data with check_value(CRC)     
+for(i=data_length;i<data_length+N-1;i++)   
+data[i]=check_value[i-data_length];   
+printf("\n----------------------------------------");   
+// printing the final data to be sent   
+printf("\n Final data to be sent : %s",data);   
+printf("\n----------------------------------------\n");   
+// Calling the receiver function to check errors   
+receiver();   
+return 0;   
+}   
+
+
+EXPERIMENT-3 
+Develop a simple data link layer that performs the flow control using the sliding 
+window protocol, and loss recovery using the Go-Back-N mechanism. 
+
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h> 
+#include <unistd.h> 
+#include <time.h> 
+#define WINDOW_SIZE 4 // Size of the sliding window 
+#define TOTAL_FRAMES 10 // Total number of frames to be sent 
+#define TIMEOUT 3 // Timeout duration in seconds 
+int send_frame(int frame) { 
+// Simulate random loss of frames (e.g., frame 2 is lost) 
+if (rand() % 5 == 0) { 
+printf("[Sender] Frame %d lost during transmission.\n", frame); 
+return 0; // Simulate frame loss 
 } 
-stage('package') { 
-139 
- 
-140 
- 
-            steps { 
-                bat "mvn package -f mavenjava" 
+printf("[Sender] Frame %d sent successfully.\n", frame); 
+return 1; // Frame sent successfully 
+} 
+int receive_ack(int frame) { 
+// Simulate random loss of ACKs (e.g., ACK for frame 3 is lost) 
+if (rand() % 7 == 0) { 
+printf("[Receiver] ACK for Frame %d lost.\n", frame); 
+return 0; // Simulate ACK loss 
+} 
+printf("[Receiver] ACK for Frame %d received successfully.\n", frame); 
+return 1; // ACK received successfully 
+} 
+void sliding_window_protocol() { 
+int base = 0;      
+// Oldest unacknowledged frame 
+int next_frame = 0; // Next frame to be sent 
+int acks[TOTAL_FRAMES] = {0}; // Array to track acknowledgments 
+time_t timers[TOTAL_FRAMES]; // Timers for each frame 
+while (base < TOTAL_FRAMES) { 
+// Send frames within the window 
+while (next_frame < base + WINDOW_SIZE && next_frame < TOTAL_FRAMES) 
+{ 
+if (!acks[next_frame]) { 
+send_frame(next_frame); 
+timers[next_frame] = time(NULL); // Start the timer 
+} 
+next_frame++; 
+} 
+// Check for ACKs or timeouts 
+for (int i = base; i < next_frame; i++) { 
+if (acks[i]) { 
+continue; // Skip acknowledged frames 
+  
+            } 
+            // Simulate receiving an acknowledgment 
+            if (receive_ack(i)) { 
+                acks[i] = 1; // Mark frame as acknowledged 
+                // Slide the window if the base frame is acknowledged 
+                while (base < TOTAL_FRAMES && acks[base]) { 
+                    printf("[Sender] Sliding window. Base frame is now %d.\n", base + 1) 
+base++; 
+                } 
+            } else { 
+                // Check for timeout 
+                if (difftime(time(NULL), timers[i]) > TIMEOUT) { 
+                    printf("[Sender] Timeout for Frame %d. Resending all frames from %d.\n", i, 
+base); 
+                    // Resend all frames from the base frame 
+                    next_frame = base; 
+                    break; 
+                } 
             } 
         } 
     } 
+    printf("[Sender] All frames sent and acknowledged successfully.\n"); 
+} 
+int main() { 
+srand(time(NULL)); // Seed for random number generation 
+printf("[Sender] Starting Sliding Window Protocol with Go-Back-N.\n"); 
+sliding_window_protocol(); 
+printf("[Sender] Transmission completed.\n"); 
+return 0; 
+} 
+
+
+EXPERIMENT-4 
+Take an example subnet of hosts and obtain a broadcast tree for the subnet. 
+
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <string.h> 
+// Function to convert an IP address to a 32-bit integer 
+unsigned int ipToInt(char* ip) { 
+unsigned int a, b, c, d; 
+sscanf(ip, "%u.%u.%u.%u", &a, &b, &c, &d); 
+return (a << 24) | (b << 16) | (c << 8) | d; 
+} 
+// Function to convert a 32-bit integer to an IP address 
+void intToIp(unsigned int ip, char* buffer) { 
+sprintf(buffer, "%u.%u.%u.%u", (ip >> 24) & 0xFF, (ip >> 16) & 0xFF, (ip 
+>> 8) & 0xFF, ip & 0xFF); 
+} 
+// Function to calculate the subnet mask from a prefix length 
+unsigned int calculateSubnetMask(int prefixLength) { 
+return prefixLength == 0 ? 0 : ~((1 << (32 - prefixLength)) - 1); 
+} 
+int main() { 
+char ip[16]; 
+int prefixLength, newPrefixLength; 
+unsigned int subnetMask, newSubnetMask, ipInt; 
+char buffer[16]; 
+// Input IP address and prefix length 
+printf("Enter IP address (e.g., 192.168.1.0): "); 
+scanf("%s", ip); 
+printf("Enter current prefix length (e.g., 24): "); 
+scanf("%d", &prefixLength); 
+// New prefix length for creating two subnets 
+newPrefixLength = prefixLength + 1; 
+// Convert IP address to integer 
+ipInt = ipToInt(ip); 
+// Calculate original subnet mask and new subnet mask 
+subnetMask = calculateSubnetMask(prefixLength); 
+newSubnetMask = calculateSubnetMask(newPrefixLength); 
+// Calculate the number of hosts per subnet 
+int hostsPerSubnet = (1 << (32 - newPrefixLength)) - 2; // subtract 2 for 
+network and broadcast addresses 
+printf("\nNumber of subnets: 2\n"); 
+printf("Number of hosts per subnet: %d\n", hostsPerSubnet); 
+// Generate subnets 
+for (int i = 0; i < 2; i++) { 
+unsigned int subnetNetwork = (ipInt & subnetMask) | (i << (32 - 
+newPrefixLength)); 
+unsigned int subnetBroadcast = subnetNetwork | ~newSubnetMask; 
+unsigned int firstHost = subnetNetwork + 1; 
+unsigned int lastHost = subnetBroadcast - 1; 
+printf("\nSubnet %d:\n", i + 1); 
+printf("Network Address: "); 
+intToIp(subnetNetwork, buffer); 
+printf("%s\n", buffer); 
+printf("Broadcast Address: "); 
+intToIp(subnetBroadcast, buffer); 
+printf("%s\n", buffer); 
+printf("Subnet Mask: "); 
+intToIp(newSubnetMask, buffer); 
+printf("%s\n", buffer); 
+printf("First Host: "); 
+intToIp(firstHost, buffer); 
+printf("%s\n", buffer); 
+printf("Last Host: "); 
+intToIp(lastHost, buffer); 
+printf("%s\n", buffer); 
+} 
+return 0; 
+} 
+
+
+EXPERIMENT-5 
+Implement distance vector routing algorithm for obtaining routing tables at 
+each node. 
+
+#include <stdio.h> 
+#include <stdlib.h> 
+#define INF 9999 
+#define MAX_NODES 10 
+// Function to initialize distance vector and routing table 
+void initialize(int numNodes, int costMatrix[MAX_NODES][MAX_NODES], 
+int distVector[MAX_NODES][MAX_NODES], int 
+nextHop[MAX_NODES][MAX_NODES]) { 
+for (int i = 0; i < numNodes; i++) { 
+for (int j = 0; j < numNodes; j++) { 
+distVector[i][j] = costMatrix[i][j]; 
+if (costMatrix[i][j] != INF && i != j) { 
+nextHop[i][j] = j; 
+} else { 
+nextHop[i][j] = -1; 
+} 
+} 
+} 
+} 
+// Function to print routing table for each node 
+void printRoutingTable(int numNodes, int 
+distVector[MAX_NODES][MAX_NODES], int 
+nextHop[MAX_NODES][MAX_NODES]) { 
+for (int i = 0; i < numNodes; i++) { 
+printf("Routing table for node %d:\n", i); 
+printf("Destination\tNext Hop\tDistance\n"); 
+for (int j = 0; j < numNodes; j++) { 
+if (distVector[i][j] == INF) { 
+printf("%d\t\t-\t\tINF\n", j); 
+} else { 
+printf("%d\t\t%d\t\t%d\n", j, nextHop[i][j], distVector[i][j]); 
+} 
+} 
+printf("\n"); 
+} 
+} 
+// Function to implement Distance Vector Routing algorithm 
+void distanceVectorRouting(int numNodes, int 
+costMatrix[MAX_NODES][MAX_NODES], int 
+distVector[MAX_NODES][MAX_NODES], int 
+nextHop[MAX_NODES][MAX_NODES]) { 
+int updated; 
+do { 
+updated = 0; 
+for (int i = 0; i < numNodes; i++) { 
+for (int j = 0; j < numNodes; j++) { 
+for (int k = 0; k < numNodes; k++) { 
+if (distVector[i][k] + distVector[k][j] < distVector[i][j]) { 
+distVector[i][j] = distVector[i][k] + distVector[k][j]; 
+nextHop[i][j] = nextHop[i][k]; 
+updated = 1; 
+} 
+} 
+}        
+} 
+} 
+} while (updated); 
+int main() { 
+int numNodes, costMatrix[MAX_NODES][MAX_NODES]; 
+int distVector[MAX_NODES][MAX_NODES]; 
+int nextHop[MAX_NODES][MAX_NODES]; 
+printf("Enter the number of nodes: "); 
+scanf("%d", &numNodes); 
+printf("Enter the cost matrix (use %d for INF):\n", INF); 
+for (int i = 0; i < numNodes; i++) { 
+for (int j = 0; j < numNodes; j++) { 
+scanf("%d", &costMatrix[i][j]); 
+} 
+} 
+initialize(numNodes, costMatrix, distVector, nextHop); 
+distanceVectorRouting(numNodes, costMatrix, distVector, nextHop); 
+printRoutingTable(numNodes, distVector, nextHop); 
+return 0;     } 
+
+
+EXPERIMENT-6 
+Implement Dijkstra’s algorithm to compute the shortest path through a 
+network. 
+
+#include <stdio.h> 
+#define INFINITY 9999 
+#define MAX 10 
+void Dijkstra(int Graph[MAX][MAX], int n, int start) { 
+int cost[MAX][MAX], distance[MAX], pred[MAX]; 
+int visited[MAX], count, mindistance, nextnode, i, j; 
+// Create cost matrix 
+for (i = 0; i < n; i++) 
+for (j = 0; j < n; j++) 
+cost[i][j] = (Graph[i][j] == 0) ? INFINITY : Graph[i][j]; 
+for (i = 0; i < n; i++) { 
+distance[i] = cost[start][i]; 
+pred[i] = start; 
+visited[i] = 0; 
+} 
+distance[start] = 0; 
+visited[start] = 1; 
+ 
+ 
+    count = 1; 
+ 
+    while (count < n - 1) { 
+        mindistance = INFINITY; 
+        for (i = 0; i < n; i++) 
+            if (distance[i] < mindistance && !visited[i]) { 
+                mindistance = distance[i]; 
+                nextnode = i; 
+            } 
+        visited[nextnode] = 1; 
+        for (i = 0; i < n; i++) 
+            if (!visited[i]) 
+                if (mindistance + cost[nextnode][i] < distance[i]) { 
+                    distance[i] = mindistance + cost[nextnode][i]; 
+                    pred[i] = nextnode; 
+                } 
+        count++; 
+    } 
+ 
+    for (i = 0; i < n; i++) 
+        if (i != start) 
+            printf("\nDistance from source to %d: %d", i, distance[i]); 
+} 
+ 
+int main() { 
+int Graph[MAX][MAX] = { 
+{0, 0, 1, 2, 0, 0, 0}, 
+{0, 0, 2, 0, 0, 3, 0}, 
+{1, 2, 0, 1, 3, 0, 0}, 
+{2, 0, 1, 0, 0, 0, 1}, 
+{0, 0, 3, 0, 0, 2, 0}, 
+{0, 3, 0, 0, 2, 0, 1}, 
+{0, 0, 0, 1, 0, 1, 0} 
+}; 
+int n = 7, u = 0; 
+Dijkstra(Graph, n, u); 
+return 0; 
+} 
+
+
+EXPERIMENT-7 
+Write a program for congestion control using Leaky bucket algorithm. 
+
+#include <stdio.h> 
+int main() { 
+int bucket_size, output_rate, input_packets, stored = 0, time; 
+printf("Enter bucket size: "); 
+scanf("%d", &bucket_size); 
+printf("Enter output rate (leak rate): "); 
+scanf("%d", &output_rate); 
+printf("Enter number of cycles (time units): "); 
+scanf("%d", &time); 
+while (time--) { 
+printf("\nEnter number of packets arriving: "); 
+scanf("%d", &input_packets); 
+// Check for overflow condition 
+if (stored + input_packets > bucket_size) { 
+printf("Bucket overflow! %d packets dropped.\n", (stored + 
+input_packets) - bucket_size); 
+stored = bucket_size; 
+} else { 
+stored += input_packets; 
+} 
+printf("Packets currently in bucket: %d\n", stored); 
+// Leak / Send packets 
+if (stored >= output_rate) { 
+stored -= output_rate; 
+printf("Packets sent: %d\n", output_rate); 
+} else { 
+printf("Packets sent: %d\n", stored); 
+stored = 0; 
+} 
+printf("Packets left in bucket after sending: %d\n", stored); 
+} 
+return 0; 
+} 
+
+
+EXPERIMENT-8 
+Implementation of DNS. 
+
+import java.net.*; 
+import java.util.Scanner; 
+public class SimpleDNSResolver { 
+public static void main(String[] args) { 
+Scanner scanner = new Scanner(System.in); 
+System.out.println("Welcome to the Simple DNS Resolver!"); 
+System.out.println("Enter a domain name to resolve (or type 'exit' to quit):"); 
+while (true) { 
+System.out.print("Domain: "); 
+String domain = scanner.nextLine(); 
+if ("exit".equalsIgnoreCase(domain)) { 
+System.out.println("Exiting DNS Resolver. Goodbye!"); 
+break; } 
+try { 
+InetAddress[] addresses = InetAddress.getAllByName(domain); 
+System.out.println("IP addresses for " + domain + ":"); 
+for (InetAddress address : addresses) { 
+System.out.println(" - " + address.getHostAddress()); 
+} 
+} catch (UnknownHostException e) { 
+System.out.println("Could not resolve domain: " + e.getMessage());}  } 
+scanner.close();}} 
+
+
+
+EXPERIMENT-9 
+Implementation of Ping service. 
+
+import java.net.*; 
+import java.io.*; 
+public class PingService { 
+public static void main(String[] args) { 
+if (args.length != 1) { 
+System.out.println("Usage: java PingService <hostname>"); 
+return;  } 
+String hostname = args[0]; // Get the hostname from command-line 
+arguments 
+try { 
+System.out.println("Pinging " + hostname + "..."); 
+InetAddress inetAddress = InetAddress.getByName(hostname); 
+boolean isReachable = inetAddress.isReachable(5000); 
+if (isReachable) { 
+System.out.println("Host " + hostname + " is reachable."); 
+System.out.println("IP Address: " + inetAddress.getHostAddress()); 
+} else { 
+System.out.println("Host " + hostname + " is not reachable.");   }    } 
+catch (UnknownHostException e) { 
+System.out.println("Unknown host: " + hostname); 
+} catch (IOException e) {             
+System.out.println("Error occurred while pinging " + hostname + ": " + 
+e.getMessage());      
+}    }   } 
+
+
+
+EXPERIMENT-10 
+Write a C program that contains a string (char pointer) with a value 
+‘Hello world’. The program should XOR each character in this string 
+with 0 and displays the result. 
+
+#include <stdio.h> 
+int main() { 
+char str[100];   // Buffer to store user input 
+int i = 0; 
+printf("Enter a string: "); 
+fgets(str, sizeof(str), stdin);  // Read input including spaces 
+// XOR each character with 0 and display the result 
+while (str[i] != '\0') { 
+printf("%c", str[i] ^ 0);   // XOR with 0 (no change) 
+i++; 
+} 
+return 0; 
 } 
 
 
 
-ORRRRRRRR
-
-pipeline {
-    agent any
-    tools{
-        maven 'MAVEN-HOME'
-    }
-    stages {
-        stage('git repo & clean') {
-            steps {
-                //bat "rmdir  /s /q mavenjava"
-                bat "git clone https://github.com/savram674/MavenJavaDemo.git"
-                bat "mvn clean -f MavenJavaDemo"
-            }
-        }
-        stage('install') {
-            steps {
-                bat "mvn install -f MavenJavaDemo"
-            }
-        }
-        stage('test') {
-            steps {
-                bat "mvn test -f MavenJavaDemo"
-            }
-        }
-        stage('package') {
-            steps {
-                bat "mvn package -f MavenJavaDemo"
-            }
-        }
-    }
-}
-
-
-Script harshith:
----------------------------------------------------------
-pipeline{
-  agent any
-  tools{
-    jdk 'JAVA_HOME'
-    maven 'MAVEN_HOME'
-  }
-  stages{
-    stage('git repo and clean'){
-      steps{
-        sh 'rm -rf java_se_lab || true'
-        sh 'git clone https://github.com/harshith-kulkarni/java_se_lab'
-        echo 'cloned repo'
-      }
-    }
-    stage('clean'){
-      steps{
-        dir('java_se_lab'){
-          sh 'mvn clean compile'
-        }
-        echo 'compiled'
-      }
-    }
-    stage('test'){
-      steps{
-        dir('java_se_lab'){
-          sh 'mvn test'
-        }
-        echo 'tested'
-      }
-    }
-    stage('package'){
-      steps{
-        dir('java_se_lab'){
-          sh 'mvn package'
-          archiveArtifacts 'target/*.jar'  idid kuda push chey ra anduloed'
-      }
-    }
-  chey ra anduloalways{ cleanWs() }
-    success{ echo 'build done' }
-    failure{ echo 'build failed' }
-  }
-}
-
-
-
-
-https://github.com/savram674/MavenJavaDemo.git
-
-
-https://github.com/archanareddyse/mavenweb.git
-
-
-
-
-
-webhook build triggers:
--------------------------------------------
-ngrok http 8080
-copy .dev link
-Go to your GitHub repository. 
-2. Navigate to Settings → Webhooks. 
-3. Click “Add webhook”. 
-4. In the Payload URL field: 
-o Enter the Jenkins 
-webhook 
-Add url example-------<https://unhired-stormily-alaine.ngrok-free.dev/github-webhook/>
-Open Jenkins Dashboard. 
-2. Select the job (freestyle or pipeline) you’ve already created.
-3. Click Configure. 
-4. Scroll down to the Build Triggers section. 
-5. Check the box: ✅GitHub hook trigger for GITScm polling
-1. Make any code update in your local repo and push it to GitHub. 
-
-git add .
-git commit -m "testing github webhook"
-git push origin main
-
-2. Once pushed, GitHub will trigger the webhook. 
-3. Jenkins will automatically detect the change and start the build pipeline.
-
-
-
-
-
-
-
-
-
-jenkins deployment using tomcat:
-----------------------------------------------------------------
-└── Step 1: Open Jenkins (localhost:8080) 
-├── Click on "New Item" (left side menu) 
-└── Step 2: Create Freestyle Project (e.g., MavenWeb_Build) 
-├── Enter project name (e.g., MavenWeb_Build) 
-├── Click "OK"
-└── Configure the project: 
-├── Description: "Web Build demo" 
-├── Source Code Management: 
-└── Git repository URL: [GitMavenWeb repo URL] 
-├── Branches to build: */Main or master
-└── Build Steps: 
-├── Add Build Step -> "Invoke top-level Maven targets" 
-└── Maven version: MAVEN_HOME 
-└── Goals: clean 
-├── Add Build Step -> "Invoke top-level Maven targets" 
-└── Maven version: MAVEN_HOME 
-└── Goals: install
-└── Post-build Actions: 
-├── Add Post Build Action -> "Archive the artifacts" 
-└── Files to archive: **/* 
-├── Add Post Build Action -> "Build other projects" 
-└── Projects to build: MavenWeb_Test 
-└── Trigger: Only if build is stable 
-└── Apply and Save
-└── Step 3: Create Freestyle Project (e.g., MavenWeb_Test) 
-├── Enter project name (e.g., MavenWeb_Test) 
-├── Click "OK"
-└── Configure the project: 
-├── Description: "Test demo" 
-├── Build Environment: 
-└── Check: "Delete the workspace before build starts" 
-├── Add Build Step -> "Copy artifacts from another project" 
-└── Project name: MavenWeb_Build 
-└── Build: Stable build only 
-└── Artifacts to copy: **/*
-├── Add Build Step -> "Invoke top-level Maven targets" 
-└── Maven version: MAVEN_HOME 
-└── Goals: test 
-└── Post-build Actions: 
-├── Add Post Build Action -> "Archive the artifacts" 
-└── Files to archive: **/*
-├── Add Post Build Action -> "Build other projects" 
-└── Projects to build: MavenWeb_Deploy 
-└── Apply and Save 
-└── Step 4: Create Freestyle Project (e.g., MavenWeb_Deploy) 
-├── Enter project name (e.g., MavenWeb_Deploy) 
-├── Click "OK"
-└── Configure the project: 
-├── Description: "Web Code Deployment" 
-├── Build Environment: 
-└── Check: "Delete the workspace before build starts" 
-├── Add Build Step -> "Copy artifacts from another project" 
-└── Project name: MavenWeb_Test 
-└── Build: Stable build only 
-└── Artifacts to copy: **/*
-└── Post-build Actions: 
-├── Add Post Build Action -> "Deploy WAR/EAR to a container" 
-└── WAR/EAR File: **/*.war 
-└── Context path: Webpath 
-└── Add container -> Tomcat 9.x remote 
-└── Credentials: Username: admin, Password: 1234 
-── Tomcat URL: https://localhost:8085/
-└── Apply and Save└── Step 5: Create Pipeline View for MavenWeb 
-├── Click "+" beside "All" on the dashboard 
-├── Enter name: MavenWeb_Pipeline 
-├── Select "Build pipeline view"
-└── Pipeline Flow: 
-├── Layout: Based on upstream/downstream relationship 
-├── Initial job: MavenWeb_Build 
-└── Apply and Save└── Step 6: Run the Pipeline and Check Output 
-├── Click on the trigger “RUN” to run the pipeline 
-Note:  
-1. After Click on Run -> click on the small black box to open the console to check if the 
-build is success 
-2. Now we see all the build has  success if it appears in green color
-
-
-extended email
-copy artifact
-deploy to
-build pipeline
-pipeline stage view
-maven
-
-
-------------------------------------------------------------------------------------------
-multi module
-
-1. Creating a Multi-Module Maven Project (Parent Project)
-Step 1: Create a new Maven Project
-
-Open File → New → Other → Maven → Maven Project
-
-Click Next
-
-Select Create a simple project (skip archetype selection)
-
-Click Next
-
-Step 2: Fill Parent Project Details
-Group ID: KMIT
-Artifact ID: MultiModule
-Packaging: pom
-Name: MultiModule Creation
-Description: Sample multi-module project with parent-child hierarchy
-
-This creates the parent project containing the main pom.xml.
-
-2. Creating Child Module 1 (JAR Module)
-Steps
-
-Right-click on the parent project → New → Maven Module
-
-Enable Create simple project
-
-Click Next
-
-Module Details
-Module Name: KMultimodule
-Parent Project: MultiModule
-Group ID: KMIT
-Packaging: jar
-Name: Simple MultiModule
-Description: Basic JAR module
-
-This generates child module 1 with its own pom.xml.
-
-3. Creating Child Module 2 (Web Module)
-Steps
-
-Right-click on the parent project → New → Maven Module
-
-Click Next
-
-Module Details
-
-Module Name: KMultiModule1
-Parent Project: MultiModule
-Choose maven-archetype-webapp (version 1.1 or 1.5)
-Click Next
-Group ID: KMIT
-Package: org.KMultiModule1
-Select Run archetype
-
-Click Finish
-
-If console asks for confirmation → type Y
-
-This creates a web application module with WAR packaging.
-
-4. Adding Dependency (Child2 depends on Child1)
-
-In child module 2's pom.xml, add:
-
-<dependency>
-    <groupId>KMIT</groupId>
-    <artifactId>KMultimodule</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-</dependency>
-
-
-This allows the web module to use classes from the JAR module.
-
-5. Building Modules
-A. Build the JAR Module
-
-Right-click on Child 1 (KMultimodule)
-
-Select Run As → Maven Build
-
-Goal: package
-
-Run
-
-B. Build the WAR Module
-
-Ensure folder structure exists:
-
-src/main/webapp/WEB-INF/web.xml
-
-
-In child module 2 pom.xml, ensure:
-
-<packaging>war</packaging>
-
-
-Run mvn package on the module.
-
-
-
-
-
-
-
-
------------------------------------------------------------
-COLLABORATIVE
-
-1. Creating and Configuring a GitHub Organization
-1.1 Create a New Organization
-
-Go to GitHub → New Organization
-
-Choose Create a free organization
-
-Fill required fields:
-
-Organization name
-
-Email
-
-(Billing info if needed)
-
-Click Next to complete setup.
-
-1.2 Configure Organization Permissions
-
-Navigate to:
-Organization → Settings → Member privileges
-
-Set the following:
-
-Base Permissions
-
-Write
-
-Project Permissions
-
-Projects base permissions: Write
-
-1.3 Create a Repository in the Organization
-
-Go to the Organization
-
-Click New Repository
-
-Enter:
-
-Repository name
-
-Description (optional)
-
-Choose:
-
-Private (recommended for internal projects)
-
-or Public
-
-Click Create Repository
-
-1.4 Add Members or Collaborators
-
-You can add people at org or repo level:
-
-A. Add Members to Organization
-
-Org → People → Invite member
-
-B. Add Access to Specific Repo
-
-Repo → Settings → Manage access → Invite teams or people
-
-1.5 (Optional) Create a Dedicated Deployment User
-
-Useful for CI/CD or Tomcat deployment
-
-Not required for general GitHub workflow
-
-2. Collaborator Workflow (What Developers Do)
-
-Prerequisite: User accepted the invite and has Git installed.
-
-2.1 Configure Git (One-time Setup)
-git config --global user.name "Your Name"
-git config --global user.email "you@example.com"
-
-2.2 Clone the Repository
-git clone https://github.com/<org-or-username>/<repo-name>.git
-cd <repo-name>
-
-2.3 Create a Feature Branch (Never Work on Main)
-git checkout -b feature/your-feature-name
-
-2.4 Make Changes → Stage → Commit
-# edit files
-git add .
-git commit -m "Short, descriptive message explaining what & why"
-
-2.5 Push Branch to GitHub
-git push origin feature/your-feature-name
-
-2.6 Open a Pull Request (PR)
-
-GitHub → Repository → Pull Requests → New Pull Request
-
-Select:
-
-Source: feature/your-feature-name
-
-Target: main
-
-Add:
-
-Title
-
-Description
-
-Click Create Pull Request
-
-2.7 Keep Feature Branch Updated with Latest Main
-git checkout main
-git pull origin main
-
-git checkout feature/your-feature-name
-git merge main
-
-
-Resolve conflicts if any → then:
-
-git add .
-git commit -m "Merge main into feature branch"
-git push origin feature/your-feature-name
-
-3. Owner / Maintainer Workflow (Reviewing & Merging PRs)
-
-Review code on GitHub (add comments as needed)
-
-Approve PR → Click Merge pull request
-
-Confirm merge
-
-Delete the feature branch on GitHub (button appears after merge)
-
-Local cleanup
-git checkout main
-git pull origin main
-git branch -d feature/your-feature-name
-git push origin --delete feature/your-feature-name
-
-4. Forking Workflow (For External Public Repos)
-
-Use this when you are not a collaborator on the original repo.
-
-4.1 Fork the Repository
-
-Go to the repo → Click Fork
-
-A copy is created under your GitHub account.
-
-4.2 Clone Your Fork
-git clone https://github.com/your-username/awesome-project.git
-cd awesome-project
-
-4.3 Create Branch → Commit → Push
-git checkout -b feature/your-change
-git add .
-git commit -m "Explain what you changed"
-git push origin feature/your-change
-
-4.4 Create Pull Request to Original Repo
-
-Your fork → Pull Request
-Target: Person1/awesome-project → Branch: main
-
-4.5 Sync Your Fork With Upstream Repo
-Add upstream remote (one-time)
-git remote add upstream https://github.com/Person1/awesome-project.git
-
-Sync
-git fetch upstream
-git checkout main
-git merge upstream/main
-git push origin main
-
-5. Resolving Merge Conflicts
-5.1 Attempt Merge
-git checkout main
-git pull origin main
-
-git checkout feature/your-feature
-git merge main
-
-
-If conflicts occur → Git shows which files need attention.
-
-5.2 Conflict Markers Look Like:
-<<<<<<< HEAD
-your current branch content
-=======
-incoming branch content
->>>>>>> feature/other-branch
-
-
-Edit the file → keep correct content → remove markers.
-
-5.3 Mark As Resolved
-git add conflicted-file.txt
-git commit      # completes merge
-git push origin feature/your-feature
-
-To abort merge:
-git merge --abort
-
-6. Creating and Applying Patch Files
-6.1 Create Patch For Single Commit
-git format-patch -1 <commit-hash>
-# file example: 0001-Your-commit-message.patch
-
-6.2 Create Patch For Last N Commits
-git format-patch -3
-
-6.3 Maintainer Applies Patch
-
-For patch from format-patch:
-
-git am 0001-Your-commit-message.patch
-
-
-For a simple .patch file:
-
-git apply my-changes.patch
-git add .
-git commit -m "Apply patch: description"
-
-------------------------------------------------------------------------------------------------------
-DOCKER CLI
-
-docker --version
-docker pull ubuntu:latest
-docker run -it -p 9090:80 --name myubuntu1 ubuntu
-apt update
-ls
-cd usr
-ls
-cd share
-apt install nginx -y
-ls
-cd nginx
-ls
-cd html
-ls
-nano index.html ctrl - x
-nginx
-localhost:9090
-
--------------------------------------------------------------------------------------------------
-GIT
-
-STEP 10 — Check Status
-git status
-
-STEP 11 — Create a new file and add it
-echo "Hello" > test1.txt
-git add test1.txt
-git commit -m "Added test1 file"
-
-STEP 12 — Check commit history
-git log --oneline
-
-STEP 13 — Create and switch to new branch
-git branch feature-branch
-git branch
-git checkout feature-branch
-# OR
-# git switch feature-branch
-
-STEP 14 — Make changes in this branch
-echo "Feature work" > feature.txt
-git add .
-git commit -m "Feature work added"
-
-STEP 15 — Push new branch
-git push --set-upstream origin feature-branch
-
-STEP 16 — View remote branches
-git branch -a
-git branch -r
-
-STEP 17 — Fetch updates (no merge)
-git fetch origin
-
-STEP 18 — Switch back to main
-git checkout main
-# or
-git switch main
-
-STEP 19 — Pull latest changes
-git pull origin main
-
-STEP 20 — Merge feature branch into main
-git merge feature-branch
-
-STEP 21 — See merged branches
-git branch --merged
-
-STEP 22 — Delete the feature branch
-git branch -d feature-branch
-
-STEP 23 — Rename remote
-git remote rename origin upstream
-git remote -v
-git remote rename upstream origin
-
-STEP 24 — Change remote URL
-git remote set-url origin https://github.com/yourusername/new-repo.git
-git remote -v
-
-STEP 25 — Remove a remote
-git remote remove origin
-
-
-Add back:
-
-git remote add origin https://github.com/yourusername/your-private-repo.git
-
-STEP 26 — Undo staging
-git reset test1.txt
-
-STEP 27 — Restore file before staging
-git restore test1.txt
-
-STEP 28 — Show commit details
-git show HEAD
-
-STEP 29 — Show differences
-
-Before staging:
-
-git diff
-
-
-After staging:
-
-git diff --staged
-
-STEP 30 — Simulate Merge Conflict
-
-Create 2 branches:
-
-git checkout -b conflict-1
-echo "AAA" > conflict.txt
-git add .
-git commit -m "AAA added"
-git push -u origin conflict-1
-
-
-Another branch:
-
-git checkout main
-git checkout -b conflict-2
-echo "BBB" > conflict.txt
-git add .
-git commit -m "BBB added"
-git push -u origin conflict-2
-
-
-Merge:
-
-git checkout conflict-1
-git merge conflict-2
-
-NOTEPAD CONFLICT.TXT
-You will get conflict markers.
-
-Resolve manually:
-
-<<<<<<< HEAD
-AAA
-=======
-BBB
->>>>>>> conflict-2
-
-
-Then:
-
-git add conflict.txt
-git commit
-
-
-📸 Screenshot of conflict markers
-
-STEP 31 — Use git blame
-git blame conflict.txt
-
-STEP 32 — Use stash
-echo "Temporary" > temp.txt
-git stash
-git stash list
-git stash apply
-
-STEP 33 — Delete multiple branches
-git branch -D conflict-1 conflict-2
-
-STEP 34 — Reflog (recover lost commit or branch)
-git reflog
-
-
-Recover:
-
-git checkout -b recovered-branch <commit_hash>
-
-----------------------------------------------------------------------------------------------------
-DOCKER COMPOSE
-
-create project
-docker-compose.yml:
-
-version: "3.8"
-
-services:
-  tomcat-app:
-    image: smarthub
-    ports:
-      - "9080:8080"
-    depends_on:
-      - mysql-db
-
-  mysql-db:
-    image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: sah_db
-      MYSQL_USER: sah_user
-      MYSQL_PASSWORD: 
-    ports:
-      - "3307:3306"
-
-Dockerfile:
-
-
-FROM tomcat:9.0
-
-# Remove default webapps
-RUN rm -rf /usr/local/tomcat/webapps/*
-
-# Copy your WAR file to Tomcat webapps as ROOT.war
-COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
-
-# Correct Tomcat startup command
-CMD ["catalina.sh", "run"]
-
-mvn clean package for generating war file
-
-docker build -t smarthub .
-docker compose up
-
-check localhost:9080
-
-
+EXPERIMENT-11 
+Write a C program that contains a string (char pointer) with a value ‘Hello 
+world’. The program should AND or and XOR each character in this 
+string with 127 and display the result. 
+
+#include <stdio.h> 
+int main() { 
+char str[100]; 
+int i; 
+// Taking user input 
+printf("Enter a string: "); 
+fgets(str, sizeof(str), stdin);  // reads a line of text including spaces 
+printf("\nOriginal String: %s\n", str); 
+printf("Character\tASCII\tAND(127)\tXOR(127)\n"); 
+printf("---------------------------------------------\n"); 
+// Processing each character 
+for (i = 0; str[i] != '\0'; i++) { 
+if (str[i] == '\n')  // skip newline character from fgets 
+continue; 
+char and_result = str[i] & 127;  // Bitwise AND 
+char xor_result = str[i] ^ 127;  // Bitwise XOR 
+printf("   
+} 
+return 0; 
+} 
+ %c\t\t%d\t   %d\t\t   %d\n", str[i], str[i], and_result, xor_result); 
+
+
+
+EXPERIMENT-12 
+Write a Java program to perform encryption and decryption using the 
+following algorithms 
+a. Ceaser cipher 
+
+import java.util.Scanner; 
+public class CaesarCipher { 
+// Method to encrypt text 
+public static String encrypt(String text, int key) { 
+StringBuilder result = new StringBuilder(); 
+for (char ch : text.toCharArray()) { 
+if (Character.isUpperCase(ch)) { 
+char c = (char) ((ch - 'A' + key) % 26 + 'A'); 
+result.append(c); 
+} else if (Character.isLowerCase(ch)) { 
+char c = (char) ((ch - 'a' + key) % 26 + 'a'); 
+result.append(c); 
+} else { 
+result.append(ch); // keep symbols/spaces unchanged 
+} 
+} 
+return result.toString(); 
+} 
+// Method to decrypt text 
+public static String decrypt(String cipher, int key) { 
+return encrypt(cipher, 26 - (key % 26)); // reverse shift 
+} 
+public static void main(String[] args) { 
+Scanner sc = new Scanner(System.in); 
+System.out.print("Enter text: "); 
+String text = sc.nextLine(); 
+System.out.print("Enter key (shift value): "); 
+int key = sc.nextInt(); 
+String encrypted = encrypt(text, key); 
+String decrypted = decrypt(encrypted, key); 
+System.out.println("\n--- Results ---"); 
+System.out.println("Encrypted Text: " + encrypted); 
+System.out.println("Decrypted Text: " + decrypted); 
+} 
+} 
+
+
+b. Substitution cipher 
+import java.util.*; 
+public class SubstitutionCipher { 
+// Method to encrypt text using substitution key 
+public static String encrypt(String text, String key) { 
+StringBuilder result = new StringBuilder(); 
+key = key.toUpperCase(); 
+for (char ch : text.toCharArray()) { 
+if (Character.isUpperCase(ch)) { 
+int index = ch - 'A'; 
+result.append(key.charAt(index)); 
+} else if (Character.isLowerCase(ch)) { 
+int index = ch - 'a'; 
+result.append(Character.toLowerCase(key.charAt(index))); 
+} else { 
+result.append(ch); // keep spaces, numbers, symbols 
+} 
+} 
+return result.toString(); 
+} 
+// Method to decrypt text using substitution key 
+public static String decrypt(String cipher, String key) { 
+StringBuilder result = new StringBuilder(); 
+key = key.toUpperCase(); 
+// Create reverse mapping 
+char[] reverseKey = new char[26]; 
+for (int i = 0; i < 26; i++) { 
+reverseKey[key.charAt(i) - 'A'] = (char) ('A' + i); 
+} 
+for (char ch : cipher.toCharArray()) { 
+if (Character.isUpperCase(ch)) { 
+int index = ch - 'A'; 
+result.append(reverseKey[index]); 
+} else if (Character.isLowerCase(ch)) { 
+int index = Character.toUpperCase(ch) - 'A'; 
+result.append(Character.toLowerCase(reverseKey[index])); 
+} else { 
+result.append(ch); 
+} 
+} 
+return result.toString(); 
+} 
+public static void main(String[] args) { 
+Scanner sc = new Scanner(System.in); 
+System.out.print("Enter 26-letter substitution key (e.g., 
+QWERTYUIOPASDFGHJKLZXCVBNM): "); 
+String key = sc.nextLine(); 
+// Validate key 
+if (key.length() != 26 || !key.matches("[A-Za-z]+")) { 
+System.out.println("Invalid key! Key must be 26 alphabetic characters."); 
+return; 
+} 
+System.out.print("Enter text to encrypt: "); 
+String text = sc.nextLine(); 
+String encrypted = encrypt(text, key); 
+String decrypted = decrypt(encrypted, key); 
+System.out.println("\n--- Results ---"); 
+System.out.println("Key Used:        
+ " + key); 
+System.out.println("Encrypted Text:   " + encrypted); 
+System.out.println("Decrypted Text:   " + decrypted); 
+} 
+} 
+
+
+c. Hill Cipher 
+import java.util.Scanner; 
+public class HillCipher { 
+// Function to multiply matrices (2x2 key with 2x1 vector) 
+private static int[] multiplyMatrix(int[][] key, int[] vector) { 
+int[] result = new int[2]; 
+result[0] = (key[0][0] * vector[0] + key[0][1] * vector[1]) % 26; 
+result[1] = (key[1][0] * vector[0] + key[1][1] * vector[1]) % 26; 
+return result; 
+} 
+// Function to find modular inverse of determinant mod 26 
+private static int modInverse(int det) { 
+det = det % 26; 
+for (int x = 1; x < 26; x++) { 
+if ((det * x) % 26 == 1) 
+return x; 
+} 
+return -1; // inverse doesn't exist 
+} 
+// Function to compute inverse of 2x2 key matrix 
+private static int[][] invertKey(int[][] key) { 
+int det = key[0][0] * key[1][1] - key[0][1] * key[1][0]; 
+det = (det % 26 + 26) % 26; 
+int invDet = modInverse(det); 
+if (invDet == -1) { 
+throw new RuntimeException("Inverse doesn't exist for this key 
+matrix!"); 
+} 
+int[][] invKey = new int[2][2]; 
+invKey[0][0] = (key[1][1] * invDet) % 26; 
+invKey[1][1] = (key[0][0] * invDet) % 26; 
+invKey[0][1] = ((-key[0][1] + 26) * invDet) % 26; 
+invKey[1][0] = ((-key[1][0] + 26) * invDet) % 26; 
+return invKey; 
+} 
+// Encrypt function 
+public static String encrypt(String plaintext, int[][] key) { 
+plaintext = plaintext.toUpperCase().replaceAll("[^A-Z]", ""); 
+if (plaintext.length() % 2 != 0) 
+plaintext += "X"; 
+StringBuilder cipher = new StringBuilder(); 
+for (int i = 0; i < plaintext.length(); i += 2) { 
+int[] vector = { 
+plaintext.charAt(i) - 'A', 
+plaintext.charAt(i + 1) - 'A' 
+}; 
+int[] result = multiplyMatrix(key, vector); 
+cipher.append((char) (result[0] + 'A')); 
+cipher.append((char) (result[1] + 'A')); 
+} 
+return cipher.toString(); 
+} 
+// Decrypt function 
+public static String decrypt(String ciphertext, int[][] key) { 
+ciphertext = ciphertext.toUpperCase().replaceAll("[^A-Z]", ""); 
+int[][] invKey = invertKey(key); 
+StringBuilder plain = new StringBuilder(); 
+for (int i = 0; i < ciphertext.length(); i += 2) { 
+int[] vector = { 
+ciphertext.charAt(i) - 'A', 
+ciphertext.charAt(i + 1) - 'A' 
+}; 
+int[] result = multiplyMatrix(invKey, vector); 
+plain.append((char) (result[0] + 'A')); 
+plain.append((char) (result[1] + 'A')); 
+} 
+return plain.toString(); 
+} 
+public static void main(String[] args) { 
+Scanner sc = new Scanner(System.in); 
+System.out.println("Hill Cipher (2x2 Matrix)"); 
+System.out.println("Enter 2x2 key matrix (values 0–25):"); 
+int[][] key = new int[2][2]; 
+for (int i = 0; i < 2; i++) 
+for (int j = 0; j < 2; j++) 
+key[i][j] = sc.nextInt(); 
+sc.nextLine(); // clear buffer 
+System.out.print("Enter plaintext: "); 
+String plaintext = sc.nextLine(); 
+String encrypted = encrypt(plaintext, key); 
+String decrypted = decrypt(encrypted, key); 
+System.out.println("\n--- Results ---"); 
+System.out.println("Encrypted Text: " + encrypted); 
+System.out.println("Decrypted Text: " + decrypted); 
+sc.close(); 
+} 
+} 
